@@ -1,7 +1,7 @@
 streamlit
-pandas
 numpy
+pandas
 scikit-learn
 sentence-transformers
-joblib
-huggingface-hub
+torch
+huggingface_hub
