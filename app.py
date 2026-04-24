@@ -73,11 +73,17 @@ def predict_subjects(text, threshold=0.3):
 def recommend_similar(text, top_k=10):
     query_emb = encode_query(text).reshape(1, -1)
     sims = cosine_similarity(query_emb, paper_embeddings)[0]
-    top_idx = np.argsort(-sims)[:top_k]
 
-    recs = papers_df.iloc[top_idx][
-        ["paper_id", "title", "abstract", "categories"]
-    ].copy()
+# FIX: ensure indices are valid
+top_idx = np.argsort(-sims)[:1000]  # limit search space
+top_idx = [i for i in top_idx if i < len(papers_df)]
+top_idx = top_idx[:top_k]
+
+# Safety check
+if len(top_idx) == 0:
+    return pd.DataFrame()
+
+recs = papers_df.iloc[top_idx][["paper_id", "title", "abstract", "categories"]].copy()
 
     recs["similarity"] = sims[top_idx]
     return recs
